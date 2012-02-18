@@ -16,6 +16,8 @@
   <%= link_to "logout", :logout, {:method => :delete, :confirm => "Are you sure you want to logout?"} %> (<%= current_user.login %>)
 <% end %>
 
+<p style="color: green"><%= flash[:notice] %></p>
+
 <%= yield %>
 
 </body>
