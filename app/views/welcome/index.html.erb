@@ -1,0 +1,8 @@
+<h2>Welcome to RailsApp</h2>
+<p> This is the test application's unprotected home page</p>
+<% if current_user -%>
+  <p>You are authorized</p>
+<% else -%>
+  <p>You need authorization to go beyond this page.  Please login.</p>
+   <%= link_to "Login", new_user_session_path %></li>
+<% end -%>

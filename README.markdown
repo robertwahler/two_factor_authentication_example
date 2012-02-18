@@ -3,8 +3,22 @@ RailsApp
 
 An example application for the AuthlogicTwoFactor Gem
 
-Creating RailsApp
------------------
+
+Example Usage
+-------------
+
+    bundle install
+    rake db:seed
+    rails s
+
+login: admin
+password: admin
+
+    firefox http://localhost:3000
+
+
+Example Generation
+------------------
 
 rails version
 
@@ -39,16 +53,15 @@ run cucumber and rspec generators
     rails generate rspec:install
     rails generate cucumber:install --rspec --capybara
 
-### add authlogic
+basic user scaffold and manual authlogic configuration
 
     rails generate scaffold user email:string first_name:string last_name:string login:string --fixture-replacement
 
-    rails generate authlogic:session
+add admin user seed
 
-    #script/generate session user_session
-    #script/generate controller user_sessions
+     rake db:seed
 
-Updating RailsApp
+Example Updating
 -----------------
 
     rails new .
