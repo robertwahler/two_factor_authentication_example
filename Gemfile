@@ -37,3 +37,15 @@ gem 'jquery-rails'
 
 # To use debugger
 # gem 'ruby-debug'
+
+gem "authlogic", "~> 3.1.0"
+
+group :test, :development do
+  gem "ruby-debug"
+  gem "rspec-rails", "~> 2.8"
+  gem "factory_girl_rails", "~> 1.6"
+  gem "capybara", "~> 1.1"
+  gem "cucumber-rails", "~> 1.2"
+  gem "database_cleaner", "~> 0.7.1"
+  gem "timecop", "= 0.3.5"
+end
