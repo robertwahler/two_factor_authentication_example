@@ -39,6 +39,15 @@ run cucumber and rspec generators
     rails generate rspec:install
     rails generate cucumber:install --rspec --capybara
 
+### add authlogic
+
+    rails generate scaffold user email:string first_name:string last_name:string login:string --fixture-replacement
+
+    rails generate authlogic:session
+
+    #script/generate session user_session
+    #script/generate controller user_sessions
+
 Updating RailsApp
 -----------------
 
