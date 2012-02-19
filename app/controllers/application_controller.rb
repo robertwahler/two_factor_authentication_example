@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   helper :all
   helper_method :current_user_session, :current_user
+  before_filter :require_user # must be logged in, redirect to login if not
 
   private
     def current_user_session

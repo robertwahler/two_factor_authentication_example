@@ -1,6 +1,4 @@
 class UsersController < ApplicationController
-  # must be logged in, redirect to login if not
-  before_filter :require_user
 
   # GET /users
   # GET /users.json
