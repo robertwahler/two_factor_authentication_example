@@ -1,4 +1,5 @@
 class UserSessionsController < ApplicationController
+  before_filter :require_no_user, :only => [:new, :create]
   skip_before_filter :require_user, :only => [:new, :create]
   skip_before_filter :require_two_factor
 

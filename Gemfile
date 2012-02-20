@@ -50,4 +50,5 @@ group :test, :development do
   gem "cucumber-rails", "~> 1.2"
   gem "database_cleaner", "~> 0.7.1"
   gem "timecop", "= 0.3.5"
+  gem "shoulda-matchers", "~> 1.0.0"
 end
