@@ -20,6 +20,7 @@ module AuthHelper
     activate_authlogic
     user = find_or_create_user(user_login)
     UserSession.create(user)
+    session[:two_factor_confirmed] = Time.now.utc.to_s(:db)
     user
   end
 end

@@ -15,9 +15,6 @@ user = User.create! (
   :password_confirmation => 'admin'
 )
 
-user.assign_two_factor_secret
-user.save!
-
 puts "demo application seed login details:"
 puts "login: #{user.login}"
 puts "password: #{user.password}"
