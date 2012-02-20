@@ -6,7 +6,7 @@
 #   cities = City.create([{ :name => 'Chicago' }, { :name => 'Copenhagen' }])
 #   Mayor.create(:name => 'Emanuel', :city => cities.first)
 
-User.create! (
+user = User.create! (
   :login  => 'admin',
   :email  => 'admin@example.com',
   :first_name  => 'admin',
@@ -15,4 +15,11 @@ User.create! (
   :password_confirmation => 'admin'
 )
 
+user.assign_two_factor_secret
+user.save!
+
+puts "demo application seed login details:"
+puts "login: #{user.login}"
+puts "password: #{user.password}"
+puts "two_factor_secret: #{user.two_factor_secret}"
 

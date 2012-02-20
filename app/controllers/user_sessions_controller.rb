@@ -1,5 +1,6 @@
 class UserSessionsController < ApplicationController
   skip_before_filter :require_user, :only => [:new, :create]
+  skip_before_filter :require_two_factor, :only => [:new, :create, :confirm, :validate]
 
   def new
     @user_session = UserSession.new
@@ -20,4 +21,16 @@ class UserSessionsController < ApplicationController
     flash[:notice] = "Logout successful!"
     redirect_back login_url
   end
+
+  def confirm
+  end
+
+  def validate
+    puts params.inspect
+    #session[:two_factor_confirmed] = UUIDTools::UUID.timestamp_create.to_s
+    session[:two_factor_confirmed] = Time.now.utc
+    # add code to store valid in session
+    redirect_to :root, :notice => 'Your session is now validated'
+  end
+
 end

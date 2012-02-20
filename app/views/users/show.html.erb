@@ -50,6 +50,10 @@
   <%=h @user.current_login_ip %>
 </p>
 
+<p>
+  <b>Two factor secret:</b>
+  <%=h @user.two_factor_secret %>
+</p>
 
 <%= link_to 'Edit', edit_user_path(@user) %> |
 <%= link_to 'Back', users_path %>

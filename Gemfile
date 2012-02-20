@@ -39,6 +39,7 @@ gem 'jquery-rails'
 # gem 'ruby-debug'
 
 gem "authlogic", "~> 3.1.0"
+gem "rotp", "~> 1.3.2"
 
 group :test, :development do
   gem "ruby-debug"

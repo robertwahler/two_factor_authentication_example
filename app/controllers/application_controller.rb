@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   helper :all
   helper_method :current_user_session, :current_user
   before_filter :require_user # must be logged in, redirect to login if not
+  before_filter :require_two_factor # must be logged in, redirect to login if not
 
   private
 
@@ -25,11 +26,20 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def require_two_factor
+    #redirect_to confirm_user_session_url(current_user_session), :notice => "Session needs confirmation token" unless current_user_session.two_factor_confirmed?
+    redirect_to confirm_url, :notice => "Session needs confirmation token" unless two_factor_confirmed?
+  end
+
+  def two_factor_confirmed?
+    !session[:two_factor_confirmed].nil?
+  end
+
   def require_no_user
     if current_user
       store_location
       flash[:notice] = "You must be logged out to access this page"
-      redirect_to account_url
+      redirect_to '/'
       return false
     end
   end
