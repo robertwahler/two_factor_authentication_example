@@ -27,12 +27,21 @@ class ApplicationController < ActionController::Base
   end
 
   def require_two_factor
+    return false unless current_user
     # TODO: return if request_ip matches LAN
     redirect_to confirm_url, :notice => "Session needs confirmation token" unless two_factor_confirmed?
   end
 
+  # NOTE:
+  # 'two_factor_confirmed?' doesn't persist with "remember_me", it dies
+  # with the session.
+  #
+  # NOTE:
+  # If the Authlogic session expires/goes stale, the entire session will
+  # be reset on the next redirect to a new user session.
+  #
+  # @return [Boolean] true if two factor confirmed
   def two_factor_confirmed?
-    # TODO: check date time, expire session after X hours
     !session[:two_factor_confirmed].nil?
   end
 
