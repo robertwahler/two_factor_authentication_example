@@ -118,6 +118,7 @@ GEM
     rdoc (3.12)
       json (~> 1.4)
     rotp (1.3.2)
+    rqrcode (0.4.2)
     rspec (2.8.0)
       rspec-core (~> 2.8.0)
       rspec-expectations (~> 2.8.0)
@@ -180,6 +181,7 @@ DEPENDENCIES
   json
   rails (= 3.2.1)
   rotp (~> 1.3.2)
+  rqrcode (~> 0.4.2)
   rspec-rails (~> 2.8)
   ruby-debug
   sass-rails (~> 3.2.3)

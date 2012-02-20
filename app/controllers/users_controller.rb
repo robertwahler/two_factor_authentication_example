@@ -15,6 +15,7 @@ class UsersController < ApplicationController
   # GET /users/1.json
   def show
     @user = User.find(params[:id])
+    @qr = @user.get_two_factor_secret_qr_code
 
     respond_to do |format|
       format.html # show.html.erb

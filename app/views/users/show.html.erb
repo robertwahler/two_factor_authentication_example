@@ -53,5 +53,9 @@
   <%=h @user.two_factor_secret %>
 </p>
 
+<% if @qr -%>
+  <%= render :partial => 'qr_code', :locals => {:qr_code => @qr} %>
+<% end %>
+
 <%= link_to 'Edit', edit_user_path(@user) %> |
 <%= link_to 'Back', users_path %>
