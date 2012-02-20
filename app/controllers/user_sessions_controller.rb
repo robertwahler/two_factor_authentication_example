@@ -1,6 +1,6 @@
 class UserSessionsController < ApplicationController
   skip_before_filter :require_user, :only => [:new, :create]
-  skip_before_filter :require_two_factor, :only => [:new, :create, :confirm, :validate]
+  skip_before_filter :require_two_factor
 
   def new
     reset_session
@@ -29,6 +29,8 @@ class UserSessionsController < ApplicationController
   end
 
   def validate
+    # TODO: allow 5 tries and then disable the user's account
+
     two_factor_secret = current_user.two_factor_secret
     validation_code =  params[:user_session][:validation_code]
 
