@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   helper :all
   helper_method :current_user_session, :current_user
   before_filter :require_user # must be logged in, redirect to login if not
-  before_filter :require_two_factor # must be logged in, redirect to login if not
+  before_filter :require_two_factor # verify two factor token
 
   private
 
@@ -27,11 +27,12 @@ class ApplicationController < ActionController::Base
   end
 
   def require_two_factor
-    #redirect_to confirm_user_session_url(current_user_session), :notice => "Session needs confirmation token" unless current_user_session.two_factor_confirmed?
+    # TODO: return if request_ip matches LAN
     redirect_to confirm_url, :notice => "Session needs confirmation token" unless two_factor_confirmed?
   end
 
   def two_factor_confirmed?
+    # TODO: check date time, expire session after X hours
     !session[:two_factor_confirmed].nil?
   end
 
