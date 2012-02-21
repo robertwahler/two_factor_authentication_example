@@ -36,9 +36,13 @@ class ApplicationController < ActionController::Base
   end
 
   def require_two_factor
-    return false unless current_user
-    # TODO: return if request_ip matches LAN
+    return false unless current_user && two_factor_required?
     redirect_to confirm_url, :notice => "Session needs confirmation token" unless two_factor_confirmed?
+  end
+
+  def two_factor_required?
+    # TODO: check request_ip matches LAN
+    true
   end
 
   # NOTE:

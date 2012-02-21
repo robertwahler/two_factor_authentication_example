@@ -36,19 +36,45 @@ describe UserSessionsController do
   end
 
   describe "session management" do
-    it "should redirect to the root page on successful login" do
-      user = find_or_create_user("user")
-      post :create, :user_session => { :login => 'user', :password => 'user' }
-      user_session = UserSession.find
-      user_session.should_not be_nil
-      user_session.record.should == user
-      response.should redirect_to('/')
+    context "without two factor authentication" do
+
+      before :each do
+        controller.stub!(:two_factor_required?).and_return(false)
+      end
+
+      it "should redirect to the root page on successful login" do
+        user = find_or_create_user("user")
+        post :create, :user_session => { :login => 'user', :password => 'user' }
+        user_session = UserSession.find
+        user_session.should_not be_nil
+        user_session.record.should == user
+        response.should redirect_to('/')
+      end
+
+      it "should redirect to the login page on session deletion" do
+        login_as(:user)
+        post :destroy
+        response.should redirect_to(login_path)
+      end
     end
 
-    it "should redirect to the login page on session deletion" do
-      login_as(:user)
-      post :destroy
-      response.should redirect_to(login_path)
+    context "with two factor authentication" do
+
+      before :each do
+        controller.stub!(:two_factor_required?).and_return(true)
+      end
+
+      it "should redirect to the confirmation page on successful login" do
+        user = find_or_create_user("user")
+        post :create, :user_session => { :login => 'user', :password => 'user' }
+        user_session = UserSession.find
+        user_session.should_not be_nil
+        user_session.record.should == user
+        response.should redirect_to(confirm_url)
+      end
     end
+
   end
+
+
 end

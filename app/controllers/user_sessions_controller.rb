@@ -13,7 +13,11 @@ class UserSessionsController < ApplicationController
     @user_session = UserSession.new(params[:user_session])
     if @user_session.save
       flash[:notice] = "Login successful!"
-      redirect_back '/'
+      if two_factor_required?
+        redirect_to confirm_url
+      else
+        redirect_back '/'
+      end
     else
       render :action => :new
     end
