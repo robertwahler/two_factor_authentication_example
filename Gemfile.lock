@@ -75,6 +75,7 @@ GEM
       json (>= 1.4.6)
     hike (1.2.1)
     i18n (0.6.0)
+    ipaddress (0.8.0)
     journey (1.0.1)
     jquery-rails (2.0.0)
       railties (>= 3.2.0.beta, < 5.0)
@@ -178,6 +179,7 @@ DEPENDENCIES
   cucumber-rails (~> 1.2)
   database_cleaner (~> 0.7.1)
   factory_girl_rails (~> 1.6)
+  ipaddress (~> 0.8.0)
   jquery-rails
   json
   rails (= 3.2.1)

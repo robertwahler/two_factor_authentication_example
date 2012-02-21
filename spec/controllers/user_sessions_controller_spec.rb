@@ -36,10 +36,11 @@ describe UserSessionsController do
   end
 
   describe "session management" do
-    context "login without two factor authentication" do
+    context "login from approved IP addresses without two factor authentication" do
 
       before :each do
-        controller.stub!(:two_factor_required?).and_return(false)
+        controller.stub!(:two_factor_excluded_ip_addresses).and_return([IPAddress.parse("127.0.0.1/24")])
+        request.stub!(:ip).and_return('127.0.0.2')
       end
 
       it "should redirect to the root page on successful login" do
@@ -60,10 +61,11 @@ describe UserSessionsController do
       end
     end
 
-    context "login with two factor authentication" do
+    context "login from non approved IP addresses with two factor authentication" do
 
       before :each do
-        controller.stub!(:two_factor_required?).and_return(true)
+        controller.stub!(:two_factor_excluded_ip_addresses).and_return([IPAddress.parse("127.0.0.1/24")])
+        request.stub!(:ip).and_return('127.0.2.1')
       end
 
       it "should redirect to the confirmation page on successful login" do
@@ -98,6 +100,11 @@ describe UserSessionsController do
           response.should redirect_to(confirm_url)
           flash[:error].should match(/Token invalid!/)
         end
+
+        it "should should lock out the user with 5 failed attempts" do
+          pending
+        end
+
       end
 
     end

@@ -44,8 +44,26 @@ class ApplicationController < ActionController::Base
   end
 
   def two_factor_required?
-    # TODO: check request_ip matches LAN
-    true
+    request_ip = IPAddress.parse(request.ip)
+    two_factor_excluded_ip_addresses.each do |excluded_ip|
+      return false if excluded_ip.include?(request_ip)
+    end
+    return true
+  end
+
+  # two factor exclude IP adresses
+  #
+  # @example allow localhost 127.0.0.0 -> 127.0.0.255 to bypass authentication
+  #
+  #   [IPAddress.parse("127.0.0.1/24")]
+  #
+  # @example allow no addresses to bypass
+  #
+  #   []
+  #
+  # @return [Array] of exclude IP address objects
+  def two_factor_excluded_ip_addresses
+    []
   end
 
   # NOTE:

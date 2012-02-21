@@ -14,6 +14,7 @@ Dependencies
 * Authlogic for authentication <http://github.com/binarylogic/authlogic>
 * ROTP for one time passwords <http://github.com/mdp/rotp>
 * RQRCode for QR codes <http://github.com/whomwah/rqrcode>
+* IPAddress for IP address range matching <http://github.com/bluemonk/ipaddress>
 
 ### Development
 
@@ -65,6 +66,7 @@ Gemfile
     gem "authlogic", "~> 3.1.0"
     gem "rotp", "~> 1.3.2"
     gem "rqrcode", "~> 0.4.2"
+    gem "ipaddress", "~> 0.8.0"
 
     group :test, :development do
       gem "ruby-debug"
