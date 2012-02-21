@@ -1,11 +1,30 @@
-RailsApp
-========
+Two Factor Authentication Example
+=================================
 
-An example application for the AuthlogicTwoFactor Gem
+A bare bones example Rails 3.2 application demonstrating the use of the
+[Authlogic](https://github.com/binarylogic/authlogic) gem and custom
+[two-factor authentication](http://en.wikipedia.org/wiki/Two-factor_authentication>)
+with [Google authenticator](http://code.google.com/p/google-authenticator/) support.
+
+Dependencies
+------------
+
+### Runtime
+
+* Authlogic for authentication <http://github.com/binarylogic/authlogic>
+* ROTP for one time passwords <http://github.com/mdp/rotp>
+* RQRCode for QR codes <http://github.com/whomwah/rqrcode>
+
+### Development
+
+* Rspec for unit testing <http://github.com/rspec/rspec>
+* Cucumber for functional testing <http://github.com/cucumber/cucumber>
 
 
-Example Usage
--------------
+Usage
+-----
+    git clone http://github.com/robertwahler/two_factor_authentication_example
+    cd two_factor_authentication_example
 
     bundle install
     rake db:seed
@@ -13,12 +32,23 @@ Example Usage
 
 login: admin
 password: admin
+Google Authenticator time based two_factor_secret (spaces are optional): v6na sf4k fe45 qxbq
 
     firefox http://localhost:3000
 
+run the RSpec test suite
 
-Example Generation
-------------------
+    rspec
+
+
+Additional References
+---------------------
+
+* <https://github.com/moomerman/two_factor_auth_rails>
+
+
+Initial Example Application Generation
+--------------------------------------
 
 rails version
 
@@ -28,11 +58,13 @@ rails version
 
 generate basic rails application
 
-    rails new rails_app --skip-bundle -T
+    rails new two_factor_authentication_example --skip-bundle -T
 
 Gemfile
 
     gem "authlogic", "~> 3.1.0"
+    gem "rotp", "~> 1.3.2"
+    gem "rqrcode", "~> 0.4.2"
 
     group :test, :development do
       gem "ruby-debug"
@@ -61,7 +93,12 @@ add admin user seed
 
      rake db:seed
 
-Example Updating
------------------
+Updating
+--------
 
     rails new .
+
+Copyright
+---------
+
+Copyright (c) 2012 GearheadForHire, LLC. See [LICENSE](LICENSE) for details.

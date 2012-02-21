@@ -50,7 +50,7 @@
 
 <p>
   <b>Two factor secret:</b>
-  <%=h @user.two_factor_secret %>
+  <%=h @user.two_factor_secret.scan(/.{4}/).join(' ') if @user.two_factor_secret %>
 </p>
 
 <% if @qr -%>
