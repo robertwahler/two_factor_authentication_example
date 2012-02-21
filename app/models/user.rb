@@ -10,6 +10,17 @@ class User < ActiveRecord::Base
     self.two_factor_secret = ROTP::Base32.random_base32
   end
 
+  def reset_two_factor_failure_count
+    self.two_factor_failure_count = 0
+    save!
+  end
+
+  def increment_two_factor_failure_count
+    self.two_factor_failure_count ||= 0
+    self.two_factor_failure_count += 1
+    save!
+  end
+
   # QRCode suitable for display
   #
   #   @see: app/assets/stylesheets/qr_code.css.scss

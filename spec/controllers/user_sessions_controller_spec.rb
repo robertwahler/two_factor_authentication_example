@@ -78,6 +78,37 @@ describe UserSessionsController do
         flash[:notice].should match(/Login successful, security token required/)
       end
 
+      it "should not change the two_factor_failure_count on successful login" do
+        user = find_or_create_user("user")
+        user.two_factor_failure_count = 6
+        user.save!
+        post :create, :user_session => { :login => 'user', :password => 'user' }
+        user_session = UserSession.find
+        user_session.should_not be_nil
+        user_session.record.should == user
+        response.should redirect_to(confirm_url)
+        flash[:notice].should match(/Login successful, security token required/)
+        user.reload
+        user.two_factor_failure_count.should == 6
+      end
+
+      context "without a two_factor_secret" do
+
+        it "should logout the user and redirect back to the login page" do
+          user = find_or_create_user("user")
+          user.two_factor_secret = nil
+          user.save!
+          login_as(user.login, :two_factor_confirm => false)
+          validation_code = 'ANYTHING'
+          post :validate, :user_session => { :validation_code => validation_code }
+          user_session = UserSession.find
+          user_session.should be_nil
+          response.should redirect_to(login_url)
+          flash[:error].should match(/Two factor authentication is not setup on your account/)
+        end
+      end
+
+
       context "with a valid token" do
 
         it "should redirect from confirmation page to the root page" do
@@ -87,6 +118,19 @@ describe UserSessionsController do
           post :validate, :user_session => { :validation_code => validation_code }
           response.should redirect_to('/')
           flash[:notice].should match(/Your session is now validated/)
+        end
+
+        it "should reset the two_factor_failure_count" do
+          user = find_or_create_user("user")
+          user.two_factor_failure_count = 3
+          user.save!
+          user.reload
+          user.two_factor_failure_count.should == 3
+          login_as(user.login, :two_factor_confirm => false)
+          validation_code = ROTP::TOTP.new(user.two_factor_secret).now.to_s
+          post :validate, :user_session => { :validation_code => validation_code }
+          user.reload
+          user.two_factor_failure_count.should == 0
         end
       end
 
@@ -101,8 +145,28 @@ describe UserSessionsController do
           flash[:error].should match(/Token invalid!/)
         end
 
-        it "should should lock out the user with 5 failed attempts" do
-          pending
+        it "should increment the two_factor_failure_count" do
+          user = find_or_create_user("user")
+          user.two_factor_failure_count = 3
+          user.save!
+          login_as(user.login, :two_factor_confirm => false)
+          validation_code = 'GARBAGE'
+          put :validate, :user_session => { :validation_code => validation_code }
+          user.reload
+          user.two_factor_failure_count.should == 4
+        end
+
+        it "should should lock out confirmation with 5 failed attempts" do
+          user = find_or_create_user("user")
+          user.two_factor_failure_count = 5
+          user.save!
+          login_as(user.login, :two_factor_confirm => false)
+          validation_code = 'GARBAGE'
+          put :validate, :user_session => { :validation_code => validation_code }
+          user_session = UserSession.find
+          user_session.should be_nil
+          response.should redirect_to('/')
+          flash[:error].should match(/ confirmation failure count exceeded/)
         end
 
       end

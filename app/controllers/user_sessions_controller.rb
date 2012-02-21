@@ -35,29 +35,37 @@ class UserSessionsController < ApplicationController
   end
 
   def validate
-    # TODO: allow 5 tries and then disable the user's account
-
     two_factor_secret = current_user.two_factor_secret
     validation_code =  params[:user_session][:validation_code]
-
-    #puts "-------------------------------------------"
-    #puts two_factor_secret
-    #puts validation_code
-    #puts params.inspect
-    #puts "-------------------------------------------"
 
     if !two_factor_secret
       current_user_session.destroy
       reset_session
-      flash[:notice] = "Two factor authentication is not setup on your account.  Please contact the admin."
+      flash[:error] = "Two factor authentication is not setup on your account.  Please contact the admin."
       redirect_back login_url
-    end
-    else if (validation_code == ROTP::TOTP.new(two_factor_secret).now.to_s)
+    elsif two_factor_failure_count_exceeded?
+      current_user_session.destroy
+      reset_session
+      flash[:error] = "Two factor confirmation failure count exceeded.  Please contact the admin."
+      redirect_to :root
+    elsif (validation_code == ROTP::TOTP.new(two_factor_secret).now.to_s)
+      current_user.reset_two_factor_failure_count
       session[:two_factor_confirmed] = Time.now.utc.to_s(:db)
       redirect_to :root, :notice => 'Your session is now validated'
     else
+      current_user.increment_two_factor_failure_count
       flash[:error] = "Token invalid!"
       redirect_to :action => :confirm
+    end
+  end
+
+  private
+
+  def two_factor_failure_count_exceeded?
+    begin
+      current_user.two_factor_failure_count >= 5
+    rescue
+      true
     end
   end
 

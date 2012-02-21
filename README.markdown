@@ -1,7 +1,7 @@
 Two Factor Authentication Example
 =================================
 
-A bare bones example Rails 3.2 application demonstrating the use of the
+A bare bones example Rails 3.2 application with test suite demonstrating the use of the
 [Authlogic](https://github.com/binarylogic/authlogic) gem and custom
 [two-factor authentication](http://en.wikipedia.org/wiki/Two-factor_authentication>)
 with [Google authenticator](http://code.google.com/p/google-authenticator/) support.

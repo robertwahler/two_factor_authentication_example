@@ -53,6 +53,11 @@
   <%=h @user.two_factor_secret.scan(/.{4}/).join(' ') if @user.two_factor_secret %>
 </p>
 
+<p>
+  <b>Two factor failure count:</b>
+  <%=h @user.two_factor_failure_count %>
+</p>
+
 <% if @qr -%>
   <%= render :partial => 'qr_code', :locals => {:qr_code => @qr} %>
 <% end %>
