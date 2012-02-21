@@ -13,7 +13,7 @@ describe WelcomeController do
       get :index
       response.should be_success
     end
-    it "should not show 'authorized only' message for guest users" do
+    it "should not show 'authorized only' content for guest users" do
       get :index
       response.body.should have_selector("h2", :text => /Welcome/)
       response.body.should have_selector("p", :text => "You need authorization")

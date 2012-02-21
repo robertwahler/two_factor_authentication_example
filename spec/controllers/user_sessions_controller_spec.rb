@@ -36,7 +36,7 @@ describe UserSessionsController do
   end
 
   describe "session management" do
-    context "without two factor authentication" do
+    context "login without two factor authentication" do
 
       before :each do
         controller.stub!(:two_factor_required?).and_return(false)
@@ -49,16 +49,18 @@ describe UserSessionsController do
         user_session.should_not be_nil
         user_session.record.should == user
         response.should redirect_to('/')
+        flash[:notice].should match(/Login successful!/)
       end
 
       it "should redirect to the login page on session deletion" do
         login_as(:user)
         post :destroy
         response.should redirect_to(login_path)
+        flash[:notice].should match(/Logout successful!/)
       end
     end
 
-    context "with two factor authentication" do
+    context "login with two factor authentication" do
 
       before :each do
         controller.stub!(:two_factor_required?).and_return(true)
@@ -71,10 +73,34 @@ describe UserSessionsController do
         user_session.should_not be_nil
         user_session.record.should == user
         response.should redirect_to(confirm_url)
+        flash[:notice].should match(/Login successful, security token required/)
       end
+
+      context "with a valid token" do
+
+        it "should redirect from confirmation page to the root page" do
+          user = find_or_create_user("user")
+          login_as(user.login, :two_factor_confirm => false)
+          validation_code = ROTP::TOTP.new(user.two_factor_secret).now.to_s
+          post :validate, :user_session => { :validation_code => validation_code }
+          response.should redirect_to('/')
+          flash[:notice].should match(/Your session is now validated/)
+        end
+      end
+
+      context "with an invalid token" do
+
+        it "should redirect back to the confirmation page" do
+          user = find_or_create_user("user")
+          login_as(user.login, :two_factor_confirm => false)
+          validation_code = 'GARBAGE'
+          put :validate, :user_session => { :validation_code => validation_code }
+          response.should redirect_to(confirm_url)
+          flash[:error].should match(/Token invalid!/)
+        end
+      end
+
     end
-
   end
-
 
 end

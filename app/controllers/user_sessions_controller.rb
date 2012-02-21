@@ -12,10 +12,11 @@ class UserSessionsController < ApplicationController
     reset_session
     @user_session = UserSession.new(params[:user_session])
     if @user_session.save
-      flash[:notice] = "Login successful!"
       if two_factor_required?
+        flash[:notice] = "Login successful, security token required"
         redirect_to confirm_url
       else
+        flash[:notice] = "Login successful!"
         redirect_back '/'
       end
     else
@@ -39,15 +40,11 @@ class UserSessionsController < ApplicationController
     two_factor_secret = current_user.two_factor_secret
     validation_code =  params[:user_session][:validation_code]
 
-    puts "-------------------------------------------"
-    # v6nasf4kfe45qxbq
-    # two_factor_secret = 'v6nasf4kfe45qxbq'
-    # totp = ROTP::TOTP.new(two_factor_secret)
-    # ROTP::TOTP.new(two_factor_secret).now.to_s
-    puts two_factor_secret
-    puts validation_code
-    puts params.inspect
-    puts "-------------------------------------------"
+    #puts "-------------------------------------------"
+    #puts two_factor_secret
+    #puts validation_code
+    #puts params.inspect
+    #puts "-------------------------------------------"
 
     if !two_factor_secret
       current_user_session.destroy
@@ -59,7 +56,7 @@ class UserSessionsController < ApplicationController
       session[:two_factor_confirmed] = Time.now.utc.to_s(:db)
       redirect_to :root, :notice => 'Your session is now validated'
     else
-      flash[:error] = "Token invalid"
+      flash[:error] = "Token invalid!"
       redirect_to :action => :confirm
     end
   end

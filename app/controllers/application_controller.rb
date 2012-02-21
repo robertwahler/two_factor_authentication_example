@@ -36,8 +36,11 @@ class ApplicationController < ActionController::Base
   end
 
   def require_two_factor
-    return false unless current_user && two_factor_required?
-    redirect_to confirm_url, :notice => "Session needs confirmation token" unless two_factor_confirmed?
+    return unless current_user && two_factor_required?
+    unless two_factor_confirmed?
+      redirect_to confirm_url
+      return false
+    end
   end
 
   def two_factor_required?
