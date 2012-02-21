@@ -21,10 +21,6 @@ end
 # --------------------------------------------------
 # Convenience Methods
 # --------------------------------------------------
-def all_feature_files
-  Dir['features/*.feature']
-end
-
 def all_spec_files
   Dir['spec/models/*_spec.rb'] + Dir['spec/controllers/*_spec.rb'] + Dir['spec/framework/*_spec.rb']
 end
@@ -47,28 +43,6 @@ end
 
 def run_all
   run_all_specs
-  run_default_cucumber
-end
-
-# allow cucumber rerun.txt smarts
-def run_default_cucumber
-  cmd = "cucumber -p rerun"
-  run(cmd)
-end
-
-def run_all_features
-  cmd = "cucumber #{all_feature_files.join(' ')}"
-  run(cmd)
-end
-
-def run_feature(feature)
-  cmd = "cucumber #{feature}"
-  $last_feature = feature
-  run(cmd)
-end
-
-def run_last_feature
-  run_feature($last_feature) if $last_feature
 end
 
 def run_default_spec
@@ -97,15 +71,10 @@ def prompt
 end
 
 # init
-$last_feature = nil
 prompt
 # --------------------------------------------------
 # Watchr Rules
 # --------------------------------------------------
-watch( '^features/(.*)\.feature'   )   { run_default_cucumber }
-watch( '^features/step_definitions/(.*)\.rb' )   { run_default_cucumber }
-watch( '^features/support/(.*)\.rb' )   { run_default_cucumber }
-
 watch( '^spec.*/controllers/.*_spec\.rb'   )   { |m| run_spec(m[0]) }
 watch( '^spec.*/models/.*_spec\.rb'   )   { |m| run_spec(m[0]) }
 watch( '^spec.*/framework/.*_spec\.rb'   )   { |m| run_spec(m[0]) }
@@ -125,19 +94,15 @@ watch( '^spec/spec_helper\.rb' )   { run_all_specs }
 # Ctrl-\
 Signal.trap('QUIT') do
 
-  puts "\n\nMENU: a = all , f = features  s = specs, l = last feature (#{$last_feature ? $last_feature : 'none'}), q = quit\n\n"
+  puts "\n\nMENU: a = all , s = specs, q = quit\n\n"
   c = getch
   puts c.chr
   if c.chr == "a"
     run_all
-  elsif c.chr == "f"
-    run_default_cucumber
   elsif c.chr == "s"
     run_all_specs
   elsif c.chr == "q"
     abort("exiting\n")
-  elsif c.chr == "l"
-    run_last_feature
   end
 
 end

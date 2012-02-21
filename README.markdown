@@ -19,7 +19,6 @@ Dependencies
 ### Development
 
 * Rspec for unit testing <http://github.com/rspec/rspec>
-* Cucumber for functional testing <http://github.com/cucumber/cucumber>
 
 
 Usage
@@ -73,7 +72,6 @@ Gemfile
       gem "rspec-rails", "~> 2.8"
       gem "factory_girl_rails", "~> 1.6"
       gem "capybara", "~> 1.1"
-      gem "cucumber-rails", "~> 1.2"
       gem "database_cleaner", "~> 0.7.1"
       gem "timecop", "= 0.3.5"
     end
@@ -81,11 +79,6 @@ Gemfile
 Gemfile.lock
 
     bundle update
-
-run cucumber and rspec generators
-
-    rails generate rspec:install
-    rails generate cucumber:install --rspec --capybara
 
 basic user scaffold and manual authlogic configuration
 
