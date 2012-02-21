@@ -51,7 +51,7 @@ class ApplicationController < ActionController::Base
     return true
   end
 
-  # two factor exclude IP adresses
+  # two factor exclude IP addresses, these addresses will bypass TFA
   #
   # @example allow localhost 127.0.0.0 -> 127.0.0.255 to bypass authentication
   #
@@ -71,8 +71,8 @@ class ApplicationController < ActionController::Base
   # with the session.
   #
   # NOTE:
-  # If the Authlogic session expires/goes stale, the entire session will
-  # be reset on the next redirect to a new user session.
+  # If the Authlogic session expires/goes stale, the entire session (except for
+  # :return_to) will be reset on the next redirect to a new user session.
   #
   # @return [Boolean] true if two factor confirmed
   def two_factor_confirmed?

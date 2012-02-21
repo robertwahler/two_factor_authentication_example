@@ -43,13 +43,14 @@ describe UserSessionsController do
         request.stub!(:ip).and_return('127.0.0.2')
       end
 
-      it "should redirect to the root page on successful login" do
+      it "should redirect to the requested page on successful login" do
+        session[:return_to] = '/users'
         user = find_or_create_user("user")
         post :create, :user_session => { :login => 'user', :password => 'user' }
         user_session = UserSession.find
         user_session.should_not be_nil
         user_session.record.should == user
-        response.should redirect_to('/')
+        response.should redirect_to('/users')
         flash[:notice].should match(/Login successful!/)
       end
 
@@ -111,13 +112,14 @@ describe UserSessionsController do
 
       context "with a valid token" do
 
-        it "should redirect from confirmation page to the root page" do
+        it "should redirect from confirmation page to the requested page" do
+          session[:return_to] = '/users'
           user = find_or_create_user("user")
           login_as(user.login, :two_factor_confirm => false)
           validation_code = ROTP::TOTP.new(user.two_factor_secret).now.to_s
           post :validate, :user_session => { :validation_code => validation_code }
-          response.should redirect_to('/')
-          flash[:notice].should match(/Your session is now validated/)
+          response.should redirect_to('/users')
+          flash[:notice].should match(/Your session has been confirmed/)
         end
 
         it "should reset the two_factor_failure_count" do

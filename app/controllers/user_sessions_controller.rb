@@ -4,12 +4,12 @@ class UserSessionsController < ApplicationController
   skip_before_filter :require_two_factor
 
   def new
-    reset_session
+    clear_session
     @user_session = UserSession.new
   end
 
   def create
-    reset_session
+    clear_session
     @user_session = UserSession.new(params[:user_session])
     if @user_session.save
       if two_factor_required?
@@ -51,7 +51,8 @@ class UserSessionsController < ApplicationController
     elsif (validation_code == ROTP::TOTP.new(two_factor_secret).now.to_s)
       current_user.reset_two_factor_failure_count
       session[:two_factor_confirmed] = Time.now.utc.to_s(:db)
-      redirect_to :root, :notice => 'Your session is now validated'
+      flash[:notice] = 'Your session has been confirmed'
+      redirect_back :root
     else
       current_user.increment_two_factor_failure_count
       flash[:error] = "Token invalid!"
@@ -67,6 +68,14 @@ class UserSessionsController < ApplicationController
     rescue
       true
     end
+  end
+
+  # clear the entire session except for the return_to redirect, this makes the
+  # two_factor_confirmed session variable reset along with Authlogic
+  def clear_session
+    return_to = session[:return_to]
+    reset_session
+    session[:return_to] = return_to if return_to
   end
 
 end
