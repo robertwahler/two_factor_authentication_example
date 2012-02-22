@@ -52,9 +52,13 @@ Example Application Usage
 
     rails server
 
-login: admin
-password: admin
-Google Authenticator time based two_factor_secret (spaces are optional): v6na sf4k fe45 qxbq
+login creditials for the admin user
+
+    login: admin
+    password: admin
+    Google Authenticator time based two_factor_secret (spaces are optional): v6na sf4k fe45 qxbq
+
+run the app
 
     firefox http://localhost:3000
 
