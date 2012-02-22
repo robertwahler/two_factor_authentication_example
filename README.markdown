@@ -6,6 +6,7 @@ A bare bones example Rails 3.2 application and test suite demonstrating the use 
 [two-factor authentication (TFA)](http://en.wikipedia.org/wiki/Two-factor_authentication>)
 with [Google authenticator](http://code.google.com/p/google-authenticator/) support.
 
+
 Typical Use Case
 -----------------
 
@@ -14,24 +15,58 @@ are required to use TFA.
 
 ### Demo Features
 
-* Authlogic handles authentication
-* QR code Google Authenticator secret entry without generating images (RQRCode)
-* TFA confirmation will expire with the session
-* TFA code brute force protection applies to the user, not just the session
-* TFA lockout after 5 failures, requires manual reset
+* Authlogic handles authentication, there are no changes to Authlogic, TFA is
+  completely separate and invoked after Authlogic authorization.
+* Google Authenticator QR code secret entry without generating images (RQRCode)
+  or sending secrets to the charting services.
+* TFA confirmation will expire with the session.
+* TFA confirmation code brute force protection applies to the user, not just
+  the session.  Lockout after 5 failures, requires manual reset.
 
 ### Demo Limitations
 
 Correctable in a production application
 
+* Production implementations must use SSL otherwise this implementation, and
+  Authlogic itself, is vulnerable to [session
+  hijacking](http://guides.rubyonrails.org/security.html#session-hijacking).
+  See below for configuration options.
 * TFA secret and TFA failure count reset is not implemented
 * Users can view other user secrets, they should be scoped to the current user,
   i.e.  a 'My Account' page.
 * TFA Google Authenticator secret setup requires viewing the user record, the
   demo has all IP addresses including the localhost address restricted by
-  default.
+  default.  This can be changed.  See configuration options below.
+
+Example Application Usage
+-------------------------
+
+    git clone http://github.com/robertwahler/two_factor_authentication_example
+    cd two_factor_authentication_example
+
+    bundle install
+
+    rake db:migrate
+    rake db:seed
+
+    rails server
+
+login: admin
+password: admin
+Google Authenticator time based two_factor_secret (spaces are optional): v6na sf4k fe45 qxbq
+
+    firefox http://localhost:3000
+
+run the RSpec test suite
+
+    rake db:test:prepare
+
+    rspec
+
 
 ### Demo Configuration Options
+
+#### Excluding IP Ranges from TFA
 
 Change ApplicationController to allow localhost subnet to access without TFA
 
@@ -51,6 +86,32 @@ Change ApplicationController to allow both localhost and LAN subnet to access wi
         [IPAddress.parse("127.0.0.1/24"), IPAddress.parse("10.0.0.1/24")]
       end
 
+### Forcing SSL in Production
+
+config/environments/production.rb
+
+    # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
+    config.force_ssl = true
+
+app/models/user_session.rb
+
+    # Should the cookie be set as httponly?  If true, the cookie will not be
+    # accessable from javascript
+    httponly true
+
+    # Should the cookie be set as secure?  If true, the cookie will only be sent
+    # over SSL connections
+    #
+    # Secure the cookie when the session_store is secure (production SSL)
+    secure true
+
+config/initializers/session_store.rb
+
+add these options to the session_store
+
+    :httponly => true,
+    :secure => Rails.env.production?
+
 Dependencies
 ------------
 
@@ -60,31 +121,12 @@ Dependencies
 * ROTP for one time passwords <http://github.com/mdp/rotp>
 * RQRCode for QR codes <http://github.com/whomwah/rqrcode>
 * IPAddress for IP address range matching <http://github.com/bluemonk/ipaddress>
+* UUIDTools for confirmation token timestamps <http://github.com/sporkmonger/uuidtools>
 
 ### Development
 
 * Rspec for unit testing <http://github.com/rspec/rspec>
 
-
-Example Application Usage
--------------------------
-
-    git clone http://github.com/robertwahler/two_factor_authentication_example
-    cd two_factor_authentication_example
-
-    bundle install
-    rake db:seed
-    rails s
-
-login: admin
-password: admin
-Google Authenticator time based two_factor_secret (spaces are optional): v6na sf4k fe45 qxbq
-
-    firefox http://localhost:3000
-
-run the RSpec test suite
-
-    rspec
 
 
 Additional References
@@ -93,8 +135,10 @@ Additional References
 * <https://github.com/moomerman/two_factor_auth_rails>
 
 
-Initial Example Application Generation
---------------------------------------
+Example Application Generation
+------------------------------
+
+### Initial generation
 
 rails version
 
@@ -112,6 +156,7 @@ Gemfile
     gem "rotp", "~> 1.3.2"
     gem "rqrcode", "~> 0.4.2"
     gem "ipaddress", "~> 0.8.0"
+    gem 'uuidtools', "~> 2.1.2"
 
     group :test, :development do
       gem "ruby-debug"
@@ -134,10 +179,11 @@ add admin user seed
 
      rake db:seed
 
-Updating
---------
+
+### Future Rails updates
 
     rails new .
+
 
 Copyright
 ---------
