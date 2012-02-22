@@ -1,7 +1,7 @@
 <p>Please enter your security code from Google Authenticator</p>
 
 <%= form_for :user_session, :url => {:action => :validate}, :html => {:method => :put} do |f| %>
-  <%= f.text_field :validation_code %>
+  <%= f.text_field :validation_code, :autocomplete => "off" %>
   <%= f.submit 'Validate' %>
   <%= link_to "cancel", :logout, {:method => :delete} %>
 <% end %>
