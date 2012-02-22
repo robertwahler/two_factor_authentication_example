@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(:version => 20120219185441) do
     t.datetime "created_at",                                 :null => false
     t.datetime "updated_at",                                 :null => false
     t.string   "two_factor_secret"
+    t.string   "two_factor_confirmed_at"
     t.integer  "two_factor_failure_count", :default => 0,    :null => false
   end
 

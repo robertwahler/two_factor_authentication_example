@@ -20,12 +20,12 @@ module AuthHelper
     activate_authlogic
     user = find_or_create_user(user_login)
     UserSession.create(user)
-    two_factor_confirm if options[:two_factor_confirm]
+    two_factor_confirm(user) if options[:two_factor_confirm]
     user
   end
 
-  def two_factor_confirm
-    session[:two_factor_confirmed] = Time.now.utc.to_s(:db)
+  def two_factor_confirm(user)
+    session[:two_factor_confirmed_at] = user.confirm_two_factor!
   end
 end
 

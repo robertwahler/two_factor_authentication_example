@@ -104,6 +104,7 @@ describe UserSessionsController do
           post :validate, :user_session => { :validation_code => validation_code }
           user_session = UserSession.find
           user_session.should be_nil
+          session[:two_factor_confirmed_at].should be_nil
           response.should redirect_to(login_url)
           flash[:error].should match(/Two factor authentication is not setup on your account/)
         end
@@ -120,6 +121,7 @@ describe UserSessionsController do
           post :validate, :user_session => { :validation_code => validation_code }
           response.should redirect_to('/users')
           flash[:notice].should match(/Your session has been confirmed/)
+          session[:two_factor_confirmed_at].should_not be_nil
         end
 
         it "should reset the two_factor_failure_count" do
@@ -145,6 +147,7 @@ describe UserSessionsController do
           put :validate, :user_session => { :validation_code => validation_code }
           response.should redirect_to(confirm_url)
           flash[:error].should match(/Token invalid!/)
+          session[:two_factor_confirmed_at].should be_nil
         end
 
         it "should increment the two_factor_failure_count" do
@@ -169,8 +172,8 @@ describe UserSessionsController do
           user_session.should be_nil
           response.should redirect_to('/')
           flash[:error].should match(/ confirmation failure count exceeded/)
+          session[:two_factor_confirmed_at].should be_nil
         end
-
       end
 
     end

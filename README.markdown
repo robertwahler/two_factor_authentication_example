@@ -19,7 +19,8 @@ are required to use TFA.
   completely separate and invoked after Authlogic authorization.
 * Google Authenticator QR code secret entry without generating images (RQRCode)
   or sending secrets to the charting services.
-* TFA confirmation will expire with the session.
+* TFA confirmation will expire with the session but can expire before the
+  session if required.
 * TFA confirmation code brute force protection applies to the user, not just
   the session.  Lockout after 5 failures, requires manual reset.
 
@@ -65,6 +66,20 @@ run the RSpec test suite
 
 
 ### Demo Configuration Options
+
+#### TFA configuration
+
+Change TFA brute force failure count in app/models/user.rb
+
+    def two_factor_failure_count_exceeded?
+      self.two_factor_failure_count >= 5
+    end
+
+Change length of time the TFA confirmation is valid in app/models/user.rb
+
+    def two_factor_confirmed_at_valid_for
+      12.hours
+    end
 
 #### Excluding IP Ranges from TFA
 

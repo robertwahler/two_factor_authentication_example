@@ -76,7 +76,8 @@ class ApplicationController < ActionController::Base
   #
   # @return [Boolean] true if two factor confirmed
   def two_factor_confirmed?
-    !session[:two_factor_confirmed].nil?
+    #current_user.two_factor_confirmed_at && session[:two_factor_confirmed_at] == current_user.two_factor_confirmed_at
+    current_user.two_factor_confirmed_at_valid? && session[:two_factor_confirmed_at] == current_user.two_factor_confirmed_at
   end
 
   def require_no_user

@@ -42,6 +42,7 @@ gem "authlogic", "~> 3.1.0"
 gem "rotp", "~> 1.3.2"
 gem "rqrcode", "~> 0.4.2"
 gem "ipaddress", "~> 0.8.0"
+gem 'uuidtools', "~> 2.1.2"
 
 group :test, :development do
   gem "ruby-debug"
