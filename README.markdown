@@ -1,10 +1,55 @@
 Two Factor Authentication Example
 =================================
 
-A bare bones example Rails 3.2 application with test suite demonstrating the use of the
+A bare bones example Rails 3.2 application and test suite demonstrating the use of the
 [Authlogic](https://github.com/binarylogic/authlogic) gem and custom
-[two-factor authentication](http://en.wikipedia.org/wiki/Two-factor_authentication>)
+[two-factor authentication (TFA)](http://en.wikipedia.org/wiki/Two-factor_authentication>)
 with [Google authenticator](http://code.google.com/p/google-authenticator/) support.
+
+Typical Use Case
+-----------------
+
+Intranet application with username/password authentication for LAN users.  Remote users
+are required to use TFA.
+
+### Demo Features
+
+* Authlogic handles authentication
+* QR code Google Authenticator secret entry without generating images (RQRCode)
+* TFA confirmation will expire with the session
+* TFA code brute force protection applies to the user, not just the session
+* TFA lockout after 5 failures, requires manual reset
+
+### Demo Limitations
+
+Correctable in a production application
+
+* TFA secret and TFA failure count reset is not implemented
+* Users can view other user secrets, they should be scoped to the current user,
+  i.e.  a 'My Account' page.
+* TFA Google Authenticator secret setup requires viewing the user record, the
+  demo has all IP addresses including the localhost address restricted by
+  default.
+
+### Demo Configuration Options
+
+Change ApplicationController to allow localhost subnet to access without TFA
+
+      def two_factor_excluded_ip_addresses
+        [IPAddress.parse("127.0.0.1/24")]
+      end
+
+Change ApplicationController to allow LAN subnet to access without TFA
+
+      def two_factor_excluded_ip_addresses
+        [IPAddress.parse("10.0.0.1/24")]
+      end
+
+Change ApplicationController to allow both localhost and LAN subnet to access without TFA
+
+      def two_factor_excluded_ip_addresses
+        [IPAddress.parse("127.0.0.1/24"), IPAddress.parse("10.0.0.1/24")]
+      end
 
 Dependencies
 ------------
@@ -21,8 +66,9 @@ Dependencies
 * Rspec for unit testing <http://github.com/rspec/rspec>
 
 
-Usage
------
+Example Application Usage
+-------------------------
+
     git clone http://github.com/robertwahler/two_factor_authentication_example
     cd two_factor_authentication_example
 
