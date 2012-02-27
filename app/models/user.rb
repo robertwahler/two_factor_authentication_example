@@ -49,8 +49,13 @@ class User < ActiveRecord::Base
 
   # QRCode suitable for display
   #
-  #   @see: app/assets/stylesheets/qr_code.css.scss
-  #   @see: app/assets/stylesheets/qr_code.css.scss
+  #   CSS
+  #
+  #       app/assets/stylesheets/qr_code.css.scss
+  #
+  #   Template
+  #
+  #       app/views/users/_qr_code.html.erb
   #
   def get_two_factor_secret_qr_code(size = 9, level = :h)
     secret = self.two_factor_secret
