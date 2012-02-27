@@ -4,7 +4,6 @@ class UserSessionsController < ApplicationController
   skip_before_filter :require_two_factor
 
   def new
-    clear_session
     @user_session = UserSession.new
   end
 
@@ -61,8 +60,7 @@ class UserSessionsController < ApplicationController
 
   private
 
-  # clear the entire session except for the return_to redirect, this makes the
-  # two_factor_confirmed session variable reset along with Authlogic
+  # clear the entire session except for the return_to redirect
   def clear_session
     return_to = session[:return_to]
     reset_session
