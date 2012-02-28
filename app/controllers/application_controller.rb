@@ -53,11 +53,23 @@ class ApplicationController < ActionController::Base
 
   # two factor exclude IP addresses, these addresses will bypass TFA
   #
-  # @example allow localhost 127.0.0.0 -> 127.0.0.255 to bypass authentication
+  # @example disable TFA, allow any IP address to bypass
+  #
+  #   [IPAddress.parse("0.0.0.0/0")]
+  #
+  # @example allow localhost 127.0.0.0 -> 127.0.0.255 to bypass TFA
   #
   #   [IPAddress.parse("127.0.0.1/24")]
   #
-  # @example allow no addresses to bypass
+  # @example allow localhost and private LAN addresses to bypass TFA
+  #
+  #   [IPAddress.parse("127.0.0.0/8"),
+  #    IPAddress.parse("10.0.0.0/8"),
+  #    IPAddress.parse("172.16.0.0/12"),
+  #    IPAddress.parse("192.168.0.0/16")
+  #   ]
+  #
+  # @example allow no addresses to bypass TFA
   #
   #   []
   #

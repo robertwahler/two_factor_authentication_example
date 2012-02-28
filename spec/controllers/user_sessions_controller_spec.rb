@@ -36,6 +36,27 @@ describe UserSessionsController do
   end
 
   describe "session management" do
+
+    context "login from any IP addresses when two factor authentication is disabled with quad-zero netmask" do
+
+      before :each do
+        controller.stub!(:two_factor_excluded_ip_addresses).and_return([IPAddress.parse("0.0.0.0/0")])
+        request.stub!(:ip).and_return('200.1.1.10')
+      end
+
+      it "should redirect to the requested page on successful login" do
+        session[:return_to] = '/users'
+        user = find_or_create_user("user")
+        post :create, :user_session => { :login => 'user', :password => 'user' }
+        user_session = UserSession.find
+        user_session.should_not be_nil
+        user_session.record.should == user
+        response.should redirect_to('/users')
+        flash[:notice].should match(/Login successful!/)
+      end
+
+    end
+
     context "login from approved IP addresses without two factor authentication" do
 
       before :each do

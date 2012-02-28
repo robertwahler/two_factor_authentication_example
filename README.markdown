@@ -87,7 +87,13 @@ Change length of time the TFA confirmation is valid in app/models/user.rb
 
 #### Excluding IP Ranges from TFA
 
-Change ApplicationController to allow localhost subnet to access without TFA
+Change ApplicationController to allow all logins to bypass TFA
+
+      def two_factor_excluded_ip_addresses
+        [IPAddress.parse("0.0.0.0/0")]
+      end
+
+Change ApplicationController to allow a localhost subnet to access without TFA
 
       def two_factor_excluded_ip_addresses
         [IPAddress.parse("127.0.0.1/24")]
