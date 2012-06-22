@@ -131,18 +131,51 @@ describe UserSessionsController do
         end
       end
 
-
       context "with a valid token" do
 
-        it "should redirect from confirmation page to the requested page" do
+        before :each do
           session[:return_to] = '/users'
-          user = find_or_create_user("user")
-          login_as(user.login, :two_factor_confirm => false)
-          validation_code = ROTP::TOTP.new(user.two_factor_secret).now.to_s
-          post :validate, :user_session => { :validation_code => validation_code }
-          response.should redirect_to('/users')
-          flash[:notice].should match(/Your session has been confirmed/)
-          session[:two_factor_confirmed_at].should_not be_nil
+          session[:two_factor_confirmed_at].should be_nil
+        end
+
+        context "from the current time window" do
+
+          it "should redirect from confirmation page to the requested page" do
+            user = find_or_create_user("user")
+            login_as(user.login, :two_factor_confirm => false)
+            validation_code = ROTP::TOTP.new(user.two_factor_secret).now.to_s
+            post :validate, :user_session => { :validation_code => validation_code }
+            response.should redirect_to('/users')
+            flash[:notice].should match(/Your session has been confirmed/)
+            session[:two_factor_confirmed_at].should_not be_nil
+          end
+
+        end
+
+        context "within a sliding time window" do
+
+          it "should redirect from confirmation page to the requested page for the previous 30 seconds" do
+            sliding_window_width = 1
+            user = find_or_create_user("user")
+            login_as(user.login, :two_factor_confirm => false)
+            validation_code = ROTP::TOTP.new(user.two_factor_secret).at(Time.now.ago(30 * sliding_window_width)).to_s
+            post :validate, :user_session => { :validation_code => validation_code }
+            response.should redirect_to('/users')
+            flash[:notice].should match(/Your session has been confirmed/)
+            session[:two_factor_confirmed_at].should_not be_nil
+          end
+
+          it "should redirect from confirmation page to the requested page for the following 30 seconds" do
+            sliding_window_width = 1
+            user = find_or_create_user("user")
+            login_as(user.login, :two_factor_confirm => false)
+            validation_code = ROTP::TOTP.new(user.two_factor_secret).at(Time.now.in(30 * sliding_window_width)).to_s
+            post :validate, :user_session => { :validation_code => validation_code }
+            response.should redirect_to('/users')
+            flash[:notice].should match(/Your session has been confirmed/)
+            session[:two_factor_confirmed_at].should_not be_nil
+          end
+
         end
 
         it "should reset the two_factor_failure_count" do

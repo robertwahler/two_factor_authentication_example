@@ -68,6 +68,9 @@ run the RSpec test suite
 
     rspec
 
+for development, start-up the Spork process via Guard
+
+    bundle exec guard
 
 ### Demo Configuration Options
 
@@ -83,6 +86,21 @@ Change length of time the TFA confirmation is valid in app/models/user.rb
 
     def two_factor_confirmed_at_valid_for
       12.hours
+    end
+
+Change the sliding window width from the default of one 30 second window in
+app/controllers/user_sessions_controller.rb
+
+    # Use a sliding time window to validate tokens.  System clock inaccuracy can
+    # be tolerated at the expense a small decrease in security.   A value of 0
+    # will disable the sliding window
+    #
+    # A value of 2 will check tokens in two windows before and after the current
+    # 30 second window. ie. +/- 60 seconds surrounding the current window.
+    #
+    # @return [Integer] width of the window in 30 second increments
+    def sliding_window_width
+      1
     end
 
 #### Excluding IP Ranges from TFA

@@ -47,7 +47,7 @@ class UserSessionsController < ApplicationController
       reset_session
       flash[:error] = "Two factor confirmation failure count exceeded.  Please contact the admin."
       redirect_to :root
-    elsif (validation_code == ROTP::TOTP.new(two_factor_secret).now.to_s)
+    elsif validate_code(validation_code, two_factor_secret)
       session[:two_factor_confirmed_at] = current_user.confirm_two_factor!
       flash[:notice] = 'Your session has been confirmed'
       redirect_back :root
@@ -65,6 +65,32 @@ class UserSessionsController < ApplicationController
     return_to = session[:return_to]
     reset_session
     session[:return_to] = return_to if return_to
+  end
+
+  # True if code validates within the sliding window
+  #
+  # @return [Boolean]
+  def validate_code(validation_code, two_factor_secret)
+    valid_codes = []
+    valid_codes << ROTP::TOTP.new(two_factor_secret).now.to_s
+    (1..sliding_window_width).each do |index|
+      valid_codes << ROTP::TOTP.new(two_factor_secret).at(Time.now.ago(30 * index)).to_s
+      valid_codes << ROTP::TOTP.new(two_factor_secret).at(Time.now.in(30 * index)).to_s
+    end
+
+    valid_codes.include?(validation_code)
+  end
+
+  # Use a sliding time window to validate tokens.  System clock inaccuracy can
+  # be tolerated at the expense a small decrease in security.   A value of 0
+  # will disable the sliding window
+  #
+  # A value of 2 will check tokens in two windows before and after the current
+  # 30 second window. ie. +/- 60 seconds surrounding the current window.
+  #
+  # @return [Integer] width of the window in 30 second increments
+  def sliding_window_width
+    1
   end
 
 end
