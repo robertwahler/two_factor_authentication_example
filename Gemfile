@@ -49,7 +49,6 @@ group :test, :development do
   gem "rspec-rails", "~> 2.8"
   gem "factory_girl_rails", "~> 1.6"
   gem "capybara", "~> 1.1"
-  gem "cucumber-rails", "~> 1.2"
   gem "database_cleaner", "~> 0.7.1"
   gem "timecop", "= 0.3.5"
   gem "shoulda-matchers", "~> 1.0.0"
