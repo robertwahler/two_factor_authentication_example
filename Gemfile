@@ -45,7 +45,6 @@ gem "ipaddress", "~> 0.8.0"
 gem 'uuidtools', "~> 2.1.2"
 
 group :test, :development do
-  gem "ruby-debug"
   gem "rspec-rails", "~> 2.8"
   gem "factory_girl_rails", "~> 1.6"
   gem "capybara", "~> 1.1"
