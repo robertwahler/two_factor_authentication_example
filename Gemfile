@@ -52,4 +52,9 @@ group :test, :development do
   gem "database_cleaner", "~> 0.7.1"
   gem "timecop", "= 0.3.5"
   gem "shoulda-matchers", "~> 1.0.0"
+   # guard
+  gem "guard", "~> 1.0"
+  gem "guard-rspec", ">= 0.6"
+  gem "spork-rails", "~> 3.2.0"
+  gem "guard-spork", "~> 0.7.1"
 end

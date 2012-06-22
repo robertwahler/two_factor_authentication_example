@@ -68,6 +68,9 @@ run the RSpec test suite
 
     rspec
 
+for development, start-up the Spork process via Guard
+
+    bundle exec guard
 
 ### Demo Configuration Options
 
