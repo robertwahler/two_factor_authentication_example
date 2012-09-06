@@ -92,15 +92,6 @@ class ApplicationController < ActionController::Base
     current_user.two_factor_confirmed_at_valid? && session[:two_factor_confirmed_at] == current_user.two_factor_confirmed_at
   end
 
-  def require_no_user
-    if current_user
-      store_location
-      flash[:notice] = "You must be logged out to access this page"
-      redirect_to '/'
-      return false
-    end
-  end
-
   def store_location
     session[:return_to] = request.fullpath
   end
