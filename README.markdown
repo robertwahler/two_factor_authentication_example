@@ -47,10 +47,10 @@ Example Application Usage
 
     bundle install
 
-    rake db:migrate
-    rake db:seed
+    bundle exec rake db:migrate
+    bundle exec rake db:seed
 
-    rails server
+    bundle exec rails server
 
 login creditials for the admin user
 
@@ -64,9 +64,9 @@ run the app
 
 run the RSpec test suite
 
-    rake db:test:prepare
+    bundle exec rake db:test:prepare
 
-    rspec
+    bundle exec rspec
 
 for development, start-up the Spork process via Guard
 
@@ -231,4 +231,4 @@ add admin user seed
 Copyright
 ---------
 
-Copyright (c) 2012 GearheadForHire, LLC. See [LICENSE](LICENSE) for details.
+Copyright (c) 2012-2013 GearheadForHire, LLC. See [LICENSE](LICENSE) for details.
