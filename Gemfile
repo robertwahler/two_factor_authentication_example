@@ -38,7 +38,7 @@ gem 'jquery-rails'
 # To use debugger
 # gem 'ruby-debug'
 
-gem "authlogic", "~> 3.1.0"
+gem "authlogic", ">= 3.1.0"
 gem "rotp", "~> 1.3.2"
 gem "rqrcode", "~> 0.4.2"
 gem "ipaddress", "~> 0.8.0"
