@@ -253,46 +253,26 @@ describe UserSessionsController do
       Timecop.return
     end
 
-    context "given string codes" do
-      it "should validate good codes" do
-        time = Time.local(2008, 9, 1, 10, 5, 0)
-        Timecop.travel(time)
-        controller.validate_code("515875", @secret).should be_true
-      end
-
-      it "should validate good code zero padded codes" do
-        time = Time.local(2008, 9, 1, 10, 23, 0)
-        Timecop.travel(time)
-        controller.validate_code("012516", @secret).should be_true
-      end
-
-      it "should validate bad codes" do
-        time = Time.local(2008, 9, 1, 10, 5, 0)
-        Timecop.travel(time)
-        controller.validate_code("111111", @secret).should be_false
-      end
+    it "should validate good codes" do
+      time = Time.local(2008, 9, 1, 10, 5, 0)
+      Timecop.travel(time)
+      controller.validate_code("515875", @secret).should be_true
+      controller.validate_code(515875, @secret).should be_true
     end
 
-    context "given integer codes" do
-      it "should validate good codes" do
-        time = Time.local(2008, 9, 1, 10, 5, 0)
-        Timecop.travel(time)
-        controller.validate_code(515875, @secret).should be_true
-      end
-
-      it "should validate good code zero padded codes" do
-        time = Time.local(2008, 9, 1, 10, 23, 0)
-        Timecop.travel(time)
-        controller.validate_code(12516, @secret).should be_true
-      end
-
-      it "should validate bad codes" do
-        time = Time.local(2008, 9, 1, 10, 5, 0)
-        Timecop.travel(time)
-        controller.validate_code(111111, @secret).should be_false
-      end
+    it "should validate good zero padded codes" do
+      time = Time.local(2008, 9, 1, 10, 23, 0)
+      Timecop.travel(time)
+      controller.validate_code("012516", @secret).should be_true
+      controller.validate_code(12516, @secret).should be_true
     end
 
+    it "should validate bad codes" do
+      time = Time.local(2008, 9, 1, 10, 5, 0)
+      Timecop.travel(time)
+      controller.validate_code("111111", @secret).should be_false
+      controller.validate_code(111111, @secret).should be_false
+    end
   end
 
 end
