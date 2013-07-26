@@ -284,7 +284,6 @@ describe UserSessionsController do
         time = Time.local(2008, 9, 1, 10, 23, 0)
         Timecop.travel(time)
         controller.validate_code(12516, @secret).should be_true
-        controller.validate_code(012516, @secret).should be_true
       end
 
       it "should validate bad codes" do
