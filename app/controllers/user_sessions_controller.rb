@@ -47,7 +47,7 @@ class UserSessionsController < ApplicationController
       reset_session
       flash[:error] = "Two factor confirmation failure count exceeded.  Please contact the admin."
       redirect_to :root
-    elsif validate_code(validation_code, two_factor_secret)
+    elsif validate_code(validation_code.to_i, two_factor_secret)
       session[:two_factor_confirmed_at] = current_user.confirm_two_factor!
       flash[:notice] = 'Your session has been confirmed'
       redirect_back :root
