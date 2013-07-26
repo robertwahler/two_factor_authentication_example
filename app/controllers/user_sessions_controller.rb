@@ -47,7 +47,7 @@ class UserSessionsController < ApplicationController
       reset_session
       flash[:error] = "Two factor confirmation failure count exceeded.  Please contact the admin."
       redirect_to :root
-    elsif validate_code(validation_code, two_factor_secret)
+    elsif validate_code(validation_code.to_i, two_factor_secret)
       session[:two_factor_confirmed_at] = current_user.confirm_two_factor!
       flash[:notice] = 'Your session has been confirmed'
       redirect_back :root
@@ -72,10 +72,10 @@ class UserSessionsController < ApplicationController
   # @return [Boolean]
   def validate_code(validation_code, two_factor_secret)
     valid_codes = []
-    valid_codes << ROTP::TOTP.new(two_factor_secret).now.to_s
+    valid_codes << ROTP::TOTP.new(two_factor_secret).now
     (1..sliding_window_width).each do |index|
-      valid_codes << ROTP::TOTP.new(two_factor_secret).at(Time.now.ago(30 * index)).to_s
-      valid_codes << ROTP::TOTP.new(two_factor_secret).at(Time.now.in(30 * index)).to_s
+      valid_codes << ROTP::TOTP.new(two_factor_secret).at(Time.now.ago(30 * index))
+      valid_codes << ROTP::TOTP.new(two_factor_secret).at(Time.now.in(30 * index))
     end
 
     valid_codes.include?(validation_code)
